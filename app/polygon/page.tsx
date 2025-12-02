@@ -18,16 +18,35 @@ export default function PolygonPage() {
   ])
 
   useEffect(() => {
-    const savedVideos = localStorage.getItem("itfest_videos")
-    if (savedVideos) {
-      const videos = JSON.parse(savedVideos)
-      setCameras([
-        { id: 1, name: "Камера 1 - Общий план", youtubeId: videos.polygon1 || "YOUR_YOUTUBE_ID_1" },
-        { id: 2, name: "Камера 2 - Команда слева", youtubeId: videos.polygon2 || "YOUR_YOUTUBE_ID_2" },
-        { id: 3, name: "Камера 3 - Команда справа", youtubeId: videos.polygon3 || "YOUR_YOUTUBE_ID_3" },
-        { id: 4, name: "Камера 4 - Крупный план", youtubeId: videos.polygon4 || "YOUR_YOUTUBE_ID_4" },
-      ])
+    const loadStreams = async () => {
+      try {
+        const response = await fetch("/api/admin/streams")
+        if (response.ok) {
+          const data = await response.json()
+          if (data.length > 0) {
+            const streams = data[0]
+            setCameras([
+              { id: 1, name: "Камера 1 - Общий план", youtubeId: streams.polygon1_video_id || "YOUR_YOUTUBE_ID_1" },
+              {
+                id: 2,
+                name: "Камера 2 - Команда слева",
+                youtubeId: streams.polygon2_video_id || "YOUR_YOUTUBE_ID_2",
+              },
+              {
+                id: 3,
+                name: "Камера 3 - Команда справа",
+                youtubeId: streams.polygon3_video_id || "YOUR_YOUTUBE_ID_3",
+              },
+              { id: 4, name: "Камера 4 - Крупный план", youtubeId: streams.polygon4_video_id || "YOUR_YOUTUBE_ID_4" },
+            ])
+          }
+        }
+      } catch (error) {
+        console.error("[v0] Error loading streams:", error)
+      }
     }
+
+    loadStreams()
   }, [])
 
   return (
