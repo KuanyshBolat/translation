@@ -1,9 +1,14 @@
 import { NextResponse } from "next/server"
 
-const CTFD_URL = "https://ctf.itfest.kz"
-const CTFD_TOKEN = "ctfd_45cdaa5f2e8f79c5f0a767bae7aa5ac64bd69b549060dc607872e7ba625b3a0d"
+const CTFD_URL = process.env.CTFD_URL || "https://ctf.itfest.kz"
+const CTFD_TOKEN = process.env.CTFD_TOKEN
 
 export async function GET() {
+  if (!CTFD_TOKEN) {
+    console.error("[v0] CTFD_TOKEN environment variable is not set")
+    return NextResponse.json({ success: false, error: "CTFd token not configured" }, { status: 500 })
+  }
+
   try {
     console.log("[v0] Fetching scoreboard from CTFd API")
 
@@ -57,9 +62,9 @@ export async function GET() {
     if (teamsData.success && Array.isArray(teamsData.data) && teamsData.data.length > 0) {
       // Sort teams by score and get top 10
       const sortedTeams = teamsData.data
-          .filter((team: any) => team.score && team.score > 0)
-          .sort((a: any, b: any) => (b.score || 0) - (a.score || 0))
-          .slice(0, 10)
+        .filter((team: any) => team.score && team.score > 0)
+        .sort((a: any, b: any) => (b.score || 0) - (a.score || 0))
+        .slice(0, 10)
 
       console.log("[v0] Returning sorted teams data")
       return NextResponse.json({ success: true, data: sortedTeams })
@@ -79,9 +84,9 @@ export async function GET() {
 
     if (usersData.success && Array.isArray(usersData.data) && usersData.data.length > 0) {
       const sortedUsers = usersData.data
-          .filter((user: any) => user.score && user.score > 0)
-          .sort((a: any, b: any) => (b.score || 0) - (a.score || 0))
-          .slice(0, 10)
+        .filter((user: any) => user.score && user.score > 0)
+        .sort((a: any, b: any) => (b.score || 0) - (a.score || 0))
+        .slice(0, 10)
 
       console.log("[v0] Returning sorted users data")
       return NextResponse.json({ success: true, data: sortedUsers })

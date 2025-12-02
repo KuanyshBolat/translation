@@ -1,9 +1,14 @@
 import { NextResponse } from "next/server"
 
-const CTFD_URL = "https://ctf.itfest.kz"
-const CTFD_TOKEN = "ctfd_45cdaa5f2e8f79c5f0a767bae7aa5ac64bd69b549060dc607872e7ba625b3a0d"
+const CTFD_URL = process.env.CTFD_URL || "https://ctf.itfest.kz"
+const CTFD_TOKEN = process.env.CTFD_TOKEN
 
 export async function GET() {
+  if (!CTFD_TOKEN) {
+    console.error("[v0] CTFD_TOKEN environment variable is not set")
+    return NextResponse.json({ success: false, error: "CTFd token not configured" }, { status: 500 })
+  }
+
   try {
     console.log("[v0] Fetching score distribution from CTFd API")
     const response = await fetch(`${CTFD_URL}/api/v1/statistics/scores/distribution`, {
