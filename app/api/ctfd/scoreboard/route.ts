@@ -57,9 +57,9 @@ export async function GET() {
     if (teamsData.success && Array.isArray(teamsData.data) && teamsData.data.length > 0) {
       // Sort teams by score and get top 10
       const sortedTeams = teamsData.data
-        .filter((team: any) => team.score && team.score > 0)
-        .sort((a: any, b: any) => (b.score || 0) - (a.score || 0))
-        .slice(0, 10)
+          .filter((team: any) => team.score && team.score > 0)
+          .sort((a: any, b: any) => (b.score || 0) - (a.score || 0))
+          .slice(0, 10)
 
       console.log("[v0] Returning sorted teams data")
       return NextResponse.json({ success: true, data: sortedTeams })
@@ -79,9 +79,9 @@ export async function GET() {
 
     if (usersData.success && Array.isArray(usersData.data) && usersData.data.length > 0) {
       const sortedUsers = usersData.data
-        .filter((user: any) => user.score && user.score > 0)
-        .sort((a: any, b: any) => (b.score || 0) - (a.score || 0))
-        .slice(0, 10)
+          .filter((user: any) => user.score && user.score > 0)
+          .sort((a: any, b: any) => (b.score || 0) - (a.score || 0))
+          .slice(0, 10)
 
       console.log("[v0] Returning sorted users data")
       return NextResponse.json({ success: true, data: sortedUsers })

@@ -23,28 +23,28 @@ export async function GET() {
     }
 
     const detailedChallenges = await Promise.all(
-      challengesData.data.map(async (challenge: any) => {
-        try {
-          const detailResponse = await fetch(`${CTFD_URL}/api/v1/challenges/${challenge.id}`, {
-            headers: {
-              Authorization: `Token ${CTFD_TOKEN}`,
-              "Content-Type": "application/json",
-            },
-            cache: "no-store",
-          })
+        challengesData.data.map(async (challenge: any) => {
+          try {
+            const detailResponse = await fetch(`${CTFD_URL}/api/v1/challenges/${challenge.id}`, {
+              headers: {
+                Authorization: `Token ${CTFD_TOKEN}`,
+                "Content-Type": "application/json",
+              },
+              cache: "no-store",
+            })
 
-          if (detailResponse.ok) {
-            const detailData = await detailResponse.json()
-            return {
-              ...challenge,
-              solves: detailData.data?.solves || 0,
+            if (detailResponse.ok) {
+              const detailData = await detailResponse.json()
+              return {
+                ...challenge,
+                solves: detailData.data?.solves || 0,
+              }
             }
+          } catch (err) {
+            console.error(`[v0] Error fetching challenge ${challenge.id}:`, err)
           }
-        } catch (err) {
-          console.error(`[v0] Error fetching challenge ${challenge.id}:`, err)
-        }
-        return challenge
-      }),
+          return challenge
+        }),
     )
 
     console.log("[v0] Detailed challenges data:", JSON.stringify(detailedChallenges))
