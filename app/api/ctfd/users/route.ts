@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 
 const CTFD_URL = "https://ctf.itfest.kz"
-const CTFD_TOKEN = "ctfd_ac70f5530943ea5941b37eeca6d276175cf40c3e1adf757a6f477ead26f70e8b"
+const CTFD_TOKEN = "ctfd_45cdaa5f2e8f79c5f0a767bae7aa5ac64bd69b549060dc607872e7ba625b3a0d"
 
 export async function GET() {
   try {
