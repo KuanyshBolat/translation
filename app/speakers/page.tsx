@@ -1,7 +1,18 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Share2, Send, MessageCircle, X, FileText, Download, MessageSquare, Map, UsersIcon } from "lucide-react"
+import {
+  Share2,
+  Linkedin,
+  Send,
+  MessageCircle,
+  X,
+  FileText,
+  Download,
+  MessageSquare,
+  Map,
+  UsersIcon,
+} from "lucide-react"
 import Image from "next/image"
 import { PartnersMarquee } from "@/components/partners-marquee"
 
@@ -127,59 +138,27 @@ export default function SpeakersPage() {
   ]
 
   useEffect(() => {
-    const loadData = async () => {
-      try {
-        const [speakersRes, moderatorsRes, scheduleRes, streamsRes] = await Promise.all([
-          fetch("/api/admin/speakers"),
-          fetch("/api/admin/moderators"),
-          fetch("/api/admin/schedule"),
-          fetch("/api/admin/streams"),
-        ])
+    const savedSpeakers = localStorage.getItem("itfest_speakers")
+    const savedModerators = localStorage.getItem("itfest_moderators")
+    const savedSchedule = localStorage.getItem("itfest_schedule")
+    const savedVideos = localStorage.getItem("itfest_videos")
 
-        if (speakersRes.ok) {
-          const data = await speakersRes.json()
-          setSpeakers(data.length > 0 ? data : defaultSpeakers)
-        } else {
-          setSpeakers(defaultSpeakers)
-        }
+    setSpeakers(savedSpeakers ? JSON.parse(savedSpeakers) : defaultSpeakers)
+    setSchedule(savedSchedule ? JSON.parse(savedSchedule) : defaultSchedule)
 
-        if (moderatorsRes.ok) {
-          const data = await moderatorsRes.json()
-          if (data.length > 0) {
-            setModeratorsAstana(data.filter((m: any) => m.location === "astana"))
-            setModeratorsAlmaty(data.filter((m: any) => m.location === "almaty"))
-          } else {
-            setModeratorsAstana(defaultModeratorsAstana)
-            setModeratorsAlmaty(defaultModeratorsAlmaty)
-          }
-        } else {
-          setModeratorsAstana(defaultModeratorsAstana)
-          setModeratorsAlmaty(defaultModeratorsAlmaty)
-        }
-
-        if (scheduleRes.ok) {
-          const data = await scheduleRes.json()
-          setSchedule(data.length > 0 ? data : defaultSchedule)
-        } else {
-          setSchedule(defaultSchedule)
-        }
-
-        if (streamsRes.ok) {
-          const data = await streamsRes.json()
-          if (data.length > 0) {
-            setVideoId(data[0].speakers_video_id || "sulgD9TQsTk")
-          }
-        }
-      } catch (error) {
-        console.error("[v0] Error loading data:", error)
-        setSpeakers(defaultSpeakers)
-        setModeratorsAstana(defaultModeratorsAstana)
-        setModeratorsAlmaty(defaultModeratorsAlmaty)
-        setSchedule(defaultSchedule)
-      }
+    if (savedModerators) {
+      const mods = JSON.parse(savedModerators)
+      setModeratorsAstana(mods.filter((m: any) => m.location === "astana"))
+      setModeratorsAlmaty(mods.filter((m: any) => m.location === "almaty"))
+    } else {
+      setModeratorsAstana(defaultModeratorsAstana)
+      setModeratorsAlmaty(defaultModeratorsAlmaty)
     }
 
-    loadData()
+    if (savedVideos) {
+      const videos = JSON.parse(savedVideos)
+      setVideoId(videos.speakers || "sulgD9TQsTk")
+    }
   }, [])
 
   const links = [
@@ -416,6 +395,7 @@ export default function SpeakersPage() {
                   Поделиться
                 </h3>
                 <div className="flex gap-3">
+                  
                   <a
                     href={`https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=CTF ITFest 2025`}
                     target="_blank"
